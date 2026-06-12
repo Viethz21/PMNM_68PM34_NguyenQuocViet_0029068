@@ -51,6 +51,17 @@
             }
         }
 
+        public function delete($id){
+            $sinhvienModel = $this->model('sinhvienModel');
+            $result = $sinhvienModel->delete($id);
+            if($result) {
+                header("Location: /sinhvien/index");
+            } else {
+                echo "Xóa sinh viên thất bại";
+            }
+        }
+
+
 
     }
 ?>

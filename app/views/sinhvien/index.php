@@ -92,7 +92,7 @@
                 <td><?php echo $sinhvien['gioitinh']; ?></td>
                 <td>
                     <a href="/sinhvien/edit/<?php echo $sinhvien['ID']; ?>" class="btn-edit">Sửa</a>
-                    
+                    <a href="/sinhvien/delete/<?php echo $sinhvien['ID']; ?>" class="btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa sinh viên này?')">Xóa</a>
                 </td>
             </tr>
 
