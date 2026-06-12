@@ -19,16 +19,70 @@
     background-color: #04AA6D;
     color: white;
     }
+
+    .btn-container {
+        margin-bottom: 20px;
+    }
+
+    .btn-them {
+        background-color: #04AA6D;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    .btn-them:hover {
+        background-color: #038a56;
+        text-decoration: none;
+        color: white;
+    }
+
+    .btn-edit {
+        background-color: #008CBA;
+        color: white;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 3px;
+        margin-right: 5px;
+        display: inline-block;
+    }
+
+    .btn-edit:hover {
+        background-color: #007399;
+        text-decoration: none;
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #f44336;
+        color: white;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 3px;
+        display: inline-block;
+    }
+
+    .btn-delete:hover {
+        background-color: #da190b;
+        text-decoration: none;
+        color: white;
+    }
     </style>
 </head>
 <body>
     <h1>Danh sách sinh viên</h1>
+    <div class="btn-container">
+        <a href="/sinhvien/create" class="btn-them">➕ Thêm Sinh Viên</a>
+    </div>
     <table>
         <tr>
             <th>ID</th>
             <th>Tên</th>
             <th>MSSV</th>
             <th>Giới tính</th>
+            <th>Thao tác</th>
         </tr>
         <?php foreach ($sinhviens as $index => $sinhvien): ?>
             <tr>
@@ -36,7 +90,12 @@
                 <td><?php echo $sinhvien['hoten']; ?></td>
                 <td><?php echo $sinhvien['mssv']; ?></td>
                 <td><?php echo $sinhvien['gioitinh']; ?></td>
+                <td>
+                    <a href="/sinhvien/edit/<?php echo $sinhvien['ID']; ?>" class="btn-edit">Sửa</a>
+                    
+                </td>
             </tr>
+
         <?php endforeach; ?>
     </table>
     <nav aria-label="Page navigation" class="mt-4">
@@ -44,13 +103,15 @@
 
         <?php
             $pageSize = 5;
+            $currentPage = ($offset / $pageSize) + 1;
 
             for ($i = 1; $i <= $totalpage; $i++) {
-                $offset = ($i - 1) * $pageSize;
+                $pageOffset = ($i - 1) * $pageSize;
+                $activeClass = ($i == $currentPage) ? 'active' : '';
         ?>
-                <li class="page-item">
+                <li class="page-item <?php echo $activeClass; ?>">
                     <a class="page-link"
-                       href="/sinhvien/index/<?php echo $pageSize; ?>/<?php echo $offset; ?>">
+                       href="/sinhvien/index/<?php echo $pageSize; ?>/<?php echo $pageOffset; ?>">
                         <?php echo $i; ?>
                     </a>
                 </li>
