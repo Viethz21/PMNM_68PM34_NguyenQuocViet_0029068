@@ -8,6 +8,7 @@ class middleware {
 
     $publicPages = [
         '/home/login',
+        '/home/logout',
         '/auth/login'
     ]  ;
 
