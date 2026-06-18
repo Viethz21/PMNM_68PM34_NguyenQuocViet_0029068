@@ -47,6 +47,61 @@ class SinhvienModel{
         return ["sinhviens"=>$result, "totalpage"=>$totalPage];
     }
 
+    public function search($mssv = null, $hoten = null, $lop = null,
+                       $sortBy = 'mssv', $sortDir = 'ASC',
+                       $limit = 5, $offset = 0)
+{
+    
+    // Query dữ liệu
+    $query = "
+        SELECT s.*, l.tenlop
+        FROM tbl_sinhviens s
+        LEFT JOIN tbl_lops l ON s.malop = l.malop
+        $whereClause
+        ORDER BY $sortColumn $sortDir
+        LIMIT :limit OFFSET :offset
+    ";
+
+    $stmt = $this->conn->prepare($query);
+
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
+
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
+    $stmt->execute();
+
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Đếm tổng số bản ghi
+    $countQuery = "
+        SELECT COUNT(*)
+        FROM tbl_sinhviens s
+        LEFT JOIN tbl_lops l ON s.malop = l.malop
+        $whereClause
+    ";
+
+    $countStmt = $this->conn->prepare($countQuery);
+
+    foreach ($params as $key => $value) {
+        $countStmt->bindValue($key, $value);
+    }
+
+    $countStmt->execute();
+
+    $totalRecord = $countStmt->fetchColumn();
+
+    $totalPage = ceil($totalRecord / $limit);
+
+    return [
+        'sinhviens' => $result,
+        'totalpage' => $totalPage,
+        'totalrecord' => $totalRecord
+    ];
+}
+
     public function getSinhvienById($id) {
         $query = "SELECT * FROM tbl_sinhviens WHERE id = :id";
         $stmt = $this->conn->prepare($query);

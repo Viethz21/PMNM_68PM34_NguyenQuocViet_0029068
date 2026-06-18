@@ -6,11 +6,54 @@
     
     class sinhvien extends Controller {
         public function index($limit = 5, $offset = 0){
+            // Get search, sort and pageSize parameters from GET
+            $mssv = $_GET['mssv'] ?? '';
+            $hoten = $_GET['hoten'] ?? '';
+            $lop = $_GET['lop'] ?? '';
+            $sortBy = $_GET['sortBy'] ?? 'id';
+            $sortDir = $_GET['sortDir'] ?? 'ASC';
+            $pageSize = isset($_GET['pageSize']) ? intval($_GET['pageSize']) : 5;
+
+            // Validate pageSize
+            if($pageSize <= 0) {
+                $pageSize = 5;
+            }
+
+            // Calculate current page from offset
+            $currentPage = ($offset / $limit) + 1;
+            $offset = ($currentPage - 1) * $pageSize;
+
             $sinhvienModel = $this->model('sinhvienModel');
-            $result = $sinhvienModel->paging($limit, $offset);
+            
+            // Use search method if any filter is provided, otherwise use paging
+            if(!empty($mssv) || !empty($hoten) || !empty($lop)) {
+                $result = $sinhvienModel->search($mssv, $hoten, $lop, $sortBy, $sortDir, $pageSize, $offset);
+            } else {
+                $result = $sinhvienModel->paging($pageSize, $offset);
+            }
+
             $sinhviens = $result['sinhviens'];
             $totalpage = $result['totalpage'];
-            $this->view('layout/masterlayout', ['viewname' => 'sinhvien/index', 'sinhviens' => $sinhviens, 'title' => 'Danh sách sinh viên', 'totalpage'=>$totalpage, 'offset'=>$offset]);
+
+            // Get all lops for filter dropdown
+            $lopModel = $this->model('lopModel');
+            $lops = $lopModel->getAllSinhvien();
+
+            $this->view('layout/masterlayout', [
+                'viewname' => 'sinhvien/index', 
+                'sinhviens' => $sinhviens, 
+                'title' => 'Danh sách sinh viên', 
+                'totalpage' => $totalpage, 
+                'offset' => $offset,
+                'pageSize' => $pageSize,
+                'mssv' => $mssv,
+                'hoten' => $hoten,
+                'lop' => $lop,
+                'sortBy' => $sortBy,
+                'sortDir' => $sortDir,
+                'lops' => $lops,
+                'currentPage' => $currentPage
+            ]);
         }
         public function create(){
            $lopModel = $this->model('lopModel');
