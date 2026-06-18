@@ -4,11 +4,31 @@
 
     class lop extends Controller{
         public function index($limit = 5, $offset = 0){
+            // Get pageSize parameter from GET
+            $pageSize = isset($_GET['pageSize']) ? intval($_GET['pageSize']) : 5;
+
+            // Validate pageSize
+            if($pageSize <= 0) {
+                $pageSize = 5;
+            }
+
+            // Calculate current page from offset
+            $currentPage = ($offset / $limit) + 1;
+            $offset = ($currentPage - 1) * $pageSize;
+
             $lopModel = $this->model('lopModel');
-            $result = $lopModel->paging($limit, $offset);
+            $result = $lopModel->paging($pageSize, $offset);
             $lops = $result['lops'];
             $totalpage = $result['totalpage'];
-            $this->view('layout/masterlayout', ['viewname' => 'lop/index', 'lops' => $lops, 'title' => 'Danh sách lop', 'totalpage'=>$totalpage]);
+            $this->view('layout/masterlayout', [
+                'viewname' => 'lop/index', 
+                'lops' => $lops, 
+                'title' => 'Danh sách lop', 
+                'totalpage' => $totalpage,
+                'pageSize' => $pageSize,
+                'offset' => $offset,
+                'currentPage' => $currentPage
+            ]);
         }
 
         public function store(){

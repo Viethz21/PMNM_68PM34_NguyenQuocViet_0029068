@@ -29,6 +29,11 @@ class LopModel{
     }
 
     public function paging($limit = 5, $offset = 0, $search = ""){
+        // Validate limit
+        if($limit <= 0) {
+            $limit = 5;
+        }
+
         $query = "SELECT * FROM tbl_lops LIMIT :limit OFFSET :offset";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
