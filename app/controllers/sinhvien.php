@@ -14,18 +14,15 @@
             $sortDir = $_GET['sortDir'] ?? 'ASC';
             $pageSize = isset($_GET['pageSize']) ? intval($_GET['pageSize']) : 5;
 
-            // Validate pageSize
             if($pageSize <= 0) {
                 $pageSize = 5;
             }
 
-            // Calculate current page from offset
             $currentPage = ($offset / $limit) + 1;
             $offset = ($currentPage - 1) * $pageSize;
 
             $sinhvienModel = $this->model('sinhvienModel');
             
-            // Use search method if any filter is provided, otherwise use paging
             if(!empty($mssv) || !empty($hoten) || !empty($lop)) {
                 $result = $sinhvienModel->search($mssv, $hoten, $lop, $sortBy, $sortDir, $pageSize, $offset);
             } else {

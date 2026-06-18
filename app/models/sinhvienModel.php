@@ -51,7 +51,60 @@ class SinhvienModel{
                        $sortBy = 'mssv', $sortDir = 'ASC',
                        $limit = 5, $offset = 0)
 {
-    
+    $allowedSortBy = ['mssv', 'hoten', 'lop'];
+
+    if (!in_array($sortBy, $allowedSortBy)) {
+        $sortBy = 'mssv';
+    }
+    $allowedSortDir = ['ASC', 'DESC', 'asc', 'desc'];
+
+    if (!in_array($sortDir, $allowedSortDir)) {
+        $sortDir = 'ASC';
+    }
+
+    $sortDir = strtoupper($sortDir);
+
+    $whereConditions = [];
+    $params = [];
+
+    if (!empty($mssv)) {
+        $whereConditions[] = "s.mssv LIKE :mssv";
+        $params[':mssv'] = "%$mssv%";
+    }
+
+    if (!empty($hoten)) {
+        $whereConditions[] = "s.hoten LIKE :hoten";
+        $params[':hoten'] = "%$hoten%";
+    }
+
+    if (!empty($lop)) {
+        $whereConditions[] = "l.tenlop LIKE :lop";
+        $params[':lop'] = "%$lop%";
+    }
+
+    $whereClause = !empty($whereConditions)
+        ? "WHERE " . implode(" AND ", $whereConditions)
+        : "";
+
+    switch ($sortBy) {
+
+        case 'mssv':
+            $sortColumn = 's.mssv';
+            break;
+
+        case 'hoten':
+            $sortColumn = 's.hoten';
+            break;
+
+        case 'lop':
+            $sortColumn = 'l.tenlop';
+            break;
+
+        default:
+            $sortColumn = 's.mssv';
+            break;
+    }
+
     // Query dữ liệu
     $query = "
         SELECT s.*, l.tenlop

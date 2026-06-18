@@ -55,7 +55,6 @@ $pageSize = 5;
                             <?= $sortBy == 'hoten' ? 'selected' : '' ?>>
                             Họ tên
                         </option>
-
                     <option value="lop"
                         <?= $sortBy == 'lop' ? 'selected' : '' ?>>
                         Tên lớp
